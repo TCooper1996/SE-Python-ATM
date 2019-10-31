@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="{%  url 'create_account_post' %}" method="post">
+    {% csrf_token %}
+    <label for="username_entry">Enter Username</label>
+    <input id="username_entry" type="text" name="username" value="">
+    <br>
+    <label for="password_entry">Enter password</label>
+    <input id="password_entry" type="text" name="password" value="">
+    <br>
+    <label for="phone_entry">Enter phone number</label>
+    <input id="password_entry" type="text" name="phone" value="">
+    <br>
+    <label for="address_entry">Enter address number</label>
+    <input id="password_entry" type="text" name="address" value="">
+    <br>
+    <input type="submit" value="Create Account">
+</form>
+{% if error %}
+    <p>{{ error }}bull</p>
+{% endif %}
+</body>
+</html>

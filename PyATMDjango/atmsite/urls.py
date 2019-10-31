@@ -4,7 +4,9 @@ from . import views
 
 urlpatterns = [
         path('', views.index, name="index"),
-        path('accountmenu/<int:account_number>', views.accountMenu, name='accountMenu'),
-        path('createaccount', views.createAccount, name='createAccount'),
-        path('viewaccount/<int:account_number>', views.viewAccount, name='viewAccount'),
+        path('accountmenu/<str:account_hash>/', views.account_menu, name='account_menu'),
+        path('authenticateaccount', views.authenticate_account, name='authenticate_account'),
+        path('createaccountpost', views.create_account_post, name='create_account_post'),
+        path('createaccount', views.create_account, name='create_account'),
+        path('viewbalance/<str:account_hash>/', views.view_balance, name='view_balance'),
         ]
