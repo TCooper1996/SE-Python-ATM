@@ -1,8 +1,10 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from random import randint
 import re
+
 username_pattern = "^[a-zA-Z].{5,19}"
 password_pattern = "(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%]{8,20}"
 phone_pattern = "[0-9]{10}"
@@ -13,21 +15,66 @@ from .models import Account, Card
 
 # Create your views here.
 def index(request):
-    return render(request, "atmsite/index.html")
+    response = render(request, "atmsite/index.html")
+    if request.COOKIES.get('current_account'):
+        response.delete_cookie('current_account')
+    return response
 
 
 def create_account(request):
     return render(request, 'atmsite/create_account.html')
 
 
-def view_balance(request, account_hash):
+def view_balance(request):
     return HttpResponse("View account balance")
 
 
-def account_menu(request, account_hash):
-    for a in Account.objects.all():
-        if a.account_hash == account_hash:
-            return render(request, 'atmsite/account_menu.html', {"account": a})
+def account_menu(request):
+    current_account_id = request.COOKIES.get('current_account')
+    if not current_account_id:
+        return HttpResponseRedirect(reverse('index'))
+    else:
+        a = Account.objects.get(id=current_account_id)
+        return render(request, 'atmsite/account_menu.html', {"account": a})
+
+
+def deposit(request):
+    return render(request, 'atmsite/deposit.html')
+
+
+def deposit_post(request):
+    return HttpResponse('Deposit post not yet implemented')
+
+
+def withdraw(request):
+    return render(request, 'atmsite/withdraw.html')
+
+
+def withdraw_post(request):
+    # Get currently logged in user, or redirect to log in if there is none.
+    if request.COOKIES.get('current_account'):
+        a = Account.objects.get(id=request.COOKIES.get('current_account'))
+    else:
+        return HttpResponseRedirect(reverse('index'))
+
+    # Get amount submitted, or reload page with error message if amount is empty string.
+    try:
+        amount = int(request.POST['amount'])
+        # Raise ValueError if amount is not divisible by 20
+        if amount % 20 != 0:
+            raise ValueError
+    except ValueError:
+        return render(request, 'atmsite/withdraw.html',
+                      {'errors': ['Please enter an integer amount divisible by $20 in the textbox.']})
+
+    errors = []
+    if a.balance > amount:
+        a.balance -= amount
+        a.save()
+        return HttpResponseRedirect(reverse('account_menu'))
+    else:
+        errors.append("Insufficient funds. Your balance currently stands at {:.2f}".format(a.balance))
+        return render(request, 'atmsite/withdraw.html', {'errors': errors})
 
 
 # This view should validate account creation and redirect user to their account menu if it is valid,
@@ -51,7 +98,7 @@ def create_account_post(request):
             errors.append("ERROR: Phone number must be numeric and be between 10 characters long.")
         if re_fails(address_pattern, address):
             errors.append("ERROR: Address field is required.")
-        if name in [a.username for a in Account.objects.all()]:
+        if Account.objects.get(username__exact=name):
             errors.append("ERROR: Username is taken.")
 
         # Branch if no error recorded
@@ -59,7 +106,7 @@ def create_account_post(request):
             account = Account(username=name, password=password, phone_number=phone, address=address)
             account.account_number = randint(0, 10000)
             account.save()
-            return HttpResponseRedirect(reverse('account_menu', args=[account.account_hash]))
+            return HttpResponseRedirect(reverse('account_menu'))
 
         # Branch if an error was recorded, reload account creation page
         else:
@@ -77,7 +124,9 @@ def authenticate_account(request):
         password = request.POST['password']
         a = Account.objects.filter(username__exact=name)[0]
         if a.password == password:
-            return HttpResponseRedirect(reverse('account_menu', args=[a.account_hash]))
+            response = HttpResponseRedirect(reverse('account_menu'))
+            response.set_cookie('current_account', a.id)
+            return response
         else:
             return render(request, 'atmsite/index.html', {'error': 'Unknown or Incorrect username/password'})
 

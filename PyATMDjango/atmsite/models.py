@@ -11,17 +11,8 @@ class Account(models.Model):
     phone_number = models.IntegerField()
     address = models.CharField(max_length=100)
     balance = models.FloatField(default=0)
-    account_hash = models.CharField(max_length=32, null=True)
     login_time = models.DateTimeField(default=timezone.now)
-    logged_in = models.BooleanField(default=True)
     account_number = models.IntegerField()
-
-    def set_hash(self):
-        print(self.username)
-        self.account_hash = hashlib.sha3_256(bytes(self.username), 'utf-8').hexdigest()
-
-    def time_expired(self):
-        return (timezone.now() - self.login_time) > timedelta(hours=2)
 
     def __str__(self):
         return self.username
@@ -57,3 +48,50 @@ class ATM(models.Model):
     next_maintenance_date = models.DateTimeField(default=get_next_maintenance_date)
 
 
+class Transaction(models.Model):
+    card_number = models.IntegerField()
+    atm = models.ForeignKey(ATM, on_delete=models.CASCADE)
+    date = models.DateTimeField(timezone.now)
+
+    def get_date(self):
+        return self.date.strftime('%d/%m/%Y')
+
+    def __str__(self):
+        return "{} with atm {} on {}".format(str(self.card_number), self.atm, self.get_date())
+
+
+class CashTransfer(Transaction):
+    receiving_account_number = models.IntegerField()
+    receiving_account_name = models.IntegerField()
+    amount_transferred = models.FloatField()
+
+    def __str__(self):
+        return "{} sent to {}".format(self.amount_transferred, self.receiving_account_name)
+
+
+class BalanceEnquiry(Transaction):
+    def __str__(self):
+        return "Balance viewed"
+
+
+class CashWithdrawal(Transaction):
+    amount_transferred = models.FloatField()
+    current_balance = models.FloatField()
+
+    def __str__(self):
+        return "{} was withdrawn, resulting in a balance of {}".format(self.amount_transferred, self.current_balance)
+
+
+class PinChange(Transaction):
+    previous_pin = models.IntegerField()
+    next_pin = models.IntegerField()
+
+    def __str__(self):
+        return "Pin was updated"
+
+
+class PhoneNumberChange(Transaction):
+    phone_number = models.IntegerField()
+
+    def __str__(self):
+        return "Phone number was updated to {}".format(self.phone_number)

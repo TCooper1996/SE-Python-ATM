@@ -21,6 +21,10 @@
     <br>
     <input type="submit" value="Create Account">
 </form>
+<form action="{% url 'index' %}" method="get">
+    <button type="submit">Return to Log in</button>
+</form>
+
 {% for error in errors %}
     <p>{{ error }}</p>
 {% endfor %}
