@@ -6,26 +6,19 @@ import hashlib
 
 # Create your models here.
 class Account(models.Model):
-    account_hash = models.CharField(max_length=32, null=True)
-    login_time = models.DateTimeField(default=timezone.now())
-    logged_in = models.BooleanField(default=True)
-    account_number = models.IntegerField()
-    phone_number = models.IntegerField()
     username = models.CharField(max_length=30)
     password = models.CharField(max_length=30)
-    balance = models.FloatField(default=0)
+    phone_number = models.IntegerField()
     address = models.CharField(max_length=100)
+    balance = models.FloatField(default=0)
+    account_hash = models.CharField(max_length=32, null=True)
+    login_time = models.DateTimeField(default=timezone.now)
+    logged_in = models.BooleanField(default=True)
+    account_number = models.IntegerField()
 
-    def tryhash(self):
-        # Assert essential fields are non-null except account_hash
-        if all(map(lambda v: v is not None, [self.account_number, self.phone_number, self.username,
-                                         self.password, self.balance, self.address])):
-            a_hash = hashlib.sha3_256(bytes(self.username, 'utf-8'))
-            self.account_hash = a_hash.hexdigest()
-            return True
-        else:
-            return False
-
+    def set_hash(self):
+        print(self.username)
+        self.account_hash = hashlib.sha3_256(bytes(self.username), 'utf-8').hexdigest()
 
     def time_expired(self):
         return (timezone.now() - self.login_time) > timedelta(hours=2)
@@ -49,4 +42,18 @@ class Card(models.Model):
 
     def __str__(self):
         return self.card_number
+
+
+def get_next_maintenance_date():
+    return timezone.now() + timedelta(weeks=104)
+
+
+class ATM(models.Model):
+    current_balance = models.FloatField(default=0)
+    current_location = models.CharField(max_length=50)
+    minimum_balance = models.FloatField(default=0)
+    active = models.BooleanField(default=True)
+    last_refill_date = models.DateTimeField(default=timezone.now)
+    next_maintenance_date = models.DateTimeField(default=get_next_maintenance_date)
+
 

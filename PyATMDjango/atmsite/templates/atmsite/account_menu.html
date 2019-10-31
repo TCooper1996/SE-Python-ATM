@@ -5,6 +5,9 @@
     <title>Title</title>
 </head>
 <body>
-
+<p>hello {{ account.username }}, this is the account menu page</p>
+<form action="{% url 'index' %}" method="get">
+    <button type="submit">Log Out</button>
+</form>
 </body>
 </html>

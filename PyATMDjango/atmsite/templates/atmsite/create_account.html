@@ -16,13 +16,13 @@
     <label for="phone_entry">Enter phone number</label>
     <input id="password_entry" type="text" name="phone" value="">
     <br>
-    <label for="address_entry">Enter address number</label>
+    <label for="address_entry">Enter address</label>
     <input id="password_entry" type="text" name="address" value="">
     <br>
     <input type="submit" value="Create Account">
 </form>
-{% if error %}
-    <p>{{ error }}bull</p>
-{% endif %}
+{% for error in errors %}
+    <p>{{ error }}</p>
+{% endfor %}
 </body>
 </html>
