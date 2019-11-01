@@ -12,12 +12,16 @@ address_pattern = ".+"
 
 from .models import Account, Card
 
+status_codes = {0: '', 1: "Transaction Succeeded", 2: "You are not logged in"}
+
 
 # Create your views here.
-def index(request):
-    response = render(request, "atmsite/index.html")
+def index(request, status_code=0):
+    response = render(request, "atmsite/index.html", {'status_code': status_codes[status_code]})
+
     if request.COOKIES.get('current_account'):
         response.delete_cookie('current_account')
+
     return response
 
 
@@ -26,16 +30,21 @@ def create_account(request):
 
 
 def view_balance(request):
-    return HttpResponse("View account balance")
+    current_account_id = request.COOKIES.get('current_account')
+    if not current_account_id:
+        return HttpResponseRedirect(reverse('index'), kwargs={'status_code': 2})
+    else:
+        a = Account.objects.get(id=current_account_id)
+        return render(request, 'atmsite/view_balance.html', {"account": a})
 
 
-def account_menu(request):
+def account_menu(request, status_code=0):
     current_account_id = request.COOKIES.get('current_account')
     if not current_account_id:
         return HttpResponseRedirect(reverse('index'))
     else:
         a = Account.objects.get(id=current_account_id)
-        return render(request, 'atmsite/account_menu.html', {"account": a})
+        return render(request, 'atmsite/account_menu.html', {"account": a, "status_message": status_codes[status_code]})
 
 
 def deposit(request):
@@ -43,7 +52,21 @@ def deposit(request):
 
 
 def deposit_post(request):
-    return HttpResponse('Deposit post not yet implemented')
+    try:
+        amount = int(request.POST['amount'])
+    except ValueError:
+        return render(request, 'atmsite/deposit.html',
+                      {'errors': ['Please enter an integer amount in dollars. Coins are not accepted.']})
+
+    # Get currently logged in user, or redirect to log in if there is none.
+    if request.COOKIES.get('current_account'):
+        a = Account.objects.get(id=request.COOKIES.get('current_account'))
+    else:
+        return HttpResponseRedirect(reverse('index'))
+
+    a.balance += amount
+    a.save()
+    return HttpResponseRedirect(reverse('account_menu', kwargs={'status_code': 1}))
 
 
 def withdraw(request):

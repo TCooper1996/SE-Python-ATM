@@ -4,7 +4,9 @@ from . import views
 
 urlpatterns = [
         path('', views.index, name="index"),
+        path('<int:status_code>/', views.index, name="index"),
         path('accountmenu/', views.account_menu, name='account_menu'),
+        path('accountmenu/<int:status_code>/', views.account_menu, name='account_menu'),
         path('authenticateaccount', views.authenticate_account, name='authenticate_account'),
         path('createaccountpost', views.create_account_post, name='create_account_post'),
         path('createaccount', views.create_account, name='create_account'),

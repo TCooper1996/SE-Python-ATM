@@ -5,6 +5,18 @@
     <title>Title</title>
 </head>
 <body>
-<form></form>
+holla holla get dolla
+<form action="{% url 'deposit_post' %}" method="post">
+    {% csrf_token %}
+    <label>
+        Insert monies yum yum yum<input type="text" name="amount">
+    </label>
+    <input type="submit" value="Submit">
+</form>
+
+{% for error in errors %}
+    <p>{{ error }}</p>
+{% endfor %}
+
 </body>
 </html>

@@ -15,5 +15,9 @@
 <form action="{% url 'deposit' %}" method="get">
     <button type="submit">put a money in </button>
 </form>
+<form action="{% url 'view_balance' %}" method="get">
+    <button type="submit">look at ya monies</button>
+</form>
+{{ status_message }}
 </body>
 </html>
