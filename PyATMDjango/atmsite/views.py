@@ -121,7 +121,7 @@ def create_account_post(request):
             errors.append("ERROR: Phone number must be numeric and be between 10 characters long.")
         if re_fails(address_pattern, address):
             errors.append("ERROR: Address field is required.")
-        if Account.objects.get(username__exact=name):
+        if Account.objects.filter(username__exact=name).exists():
             errors.append("ERROR: Username is taken.")
 
         # Branch if no error recorded
