@@ -5,6 +5,7 @@
     <title>Title</title>
 </head>
 <body>
+  <h1> Woah </h1>
 {% if error %}<p>{{ error }}</p>{%  endif %}
 <form action="{%  url 'authenticate_account' %}" method="post">
     {% csrf_token %}
