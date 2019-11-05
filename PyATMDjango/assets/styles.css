@@ -8,3 +8,33 @@ body{
 body *{
     font-family: 'Acme', sans-serif;
 }
+
+h1{
+  text-align: center;
+}
+
+
+
+.credentials input{
+  display: block;
+  padding: 3px;
+    margin: 5px;
+    border-radius: 5px;
+
+
+}
+
+.credentials {
+  padding: 10px;
+  border: 1px solid #00dba0;
+  position: relative;
+  padding-bottom: 40px;
+}
+
+.create-account{
+  margin-top: 5px;
+  padding: 10px;
+  border: 1px solid #00dba0;
+  position: relative;
+  padding-bottom: 40px;
+}
