@@ -1,8 +1,11 @@
+{% load static from staticfiles%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Acme&display=swap" rel="stylesheet">
 </head>
 <body>
 <form action="{%  url 'create_account_post' %}" method="post">

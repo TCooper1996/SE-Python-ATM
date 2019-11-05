@@ -1,0 +1,10 @@
+body{
+    background-color: #0f121f;
+    background-image: url(earth.jpg);
+    background-repeat-y: no-repeat;
+    color: #fff;
+}
+
+body *{
+    font-family: 'Acme', sans-serif;
+}
