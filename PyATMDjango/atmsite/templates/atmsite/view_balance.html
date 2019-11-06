@@ -8,6 +8,7 @@
         <link href="https://fonts.googleapis.com/css?family=Acme&display=swap" rel="stylesheet">
 </head>
 <body>
+  <h1> Balance </h1>
 <p>{{ account.username }}, you have 33 $ {{ account.balance }}</p>
 <form action="{% url 'account_menu' %}" method="get">
     <button type="submit">Return to menu</button>

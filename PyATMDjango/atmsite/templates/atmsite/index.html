@@ -4,12 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
+    <link rel="icon" type="image/png" href="{% static 'credit-card-4x.png' %}" />
     <link rel="stylesheet" href="{% static 'styles.css' %}">
         <link href="https://fonts.googleapis.com/css?family=Acme&display=swap" rel="stylesheet">
 </head>
 <body>
   <h1> Python ATM </h1>
-{% if error %}<p>{{ error }}</p>{%  endif %}
+{% if error %}<p class = "errorClass">{{ error }}</p>{%  endif %}
 <form class="credentials" action="{%  url 'authenticate_account' %}" method="post">
     {% csrf_token %}
     <h1> Sign in </h1>
