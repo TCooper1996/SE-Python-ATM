@@ -1,22 +1,28 @@
+{% load static from staticfiles%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Home</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Acme&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h1> Woah </h1>
+  <h1> Python ATM </h1>
 {% if error %}<p>{{ error }}</p>{%  endif %}
-<form action="{%  url 'authenticate_account' %}" method="post">
+<form class="credentials" action="{%  url 'authenticate_account' %}" method="post">
     {% csrf_token %}
+    <h1> Sign in </h1>
     <label for="username_entry">Enter Username</label>
     <input id="username_entry" type="text" name="username" value="">
     <br>
     <label for="password_entry">Enter password</label>
-    <input id="password_entry" type="text" name="password" value="">
+    <input id="password_entry" type="password" name="password" value="">
+    <br>
     <input type="submit" value="Log in">
 </form>
-<p>Or: create an account</p>
+<div class="create-account">
+<h1>Create an account</h1>
 <form action="{% url 'create_account' %}" method="get">
     {% csrf_token %}
     <input type="submit" value="Create Account">
@@ -25,6 +31,7 @@
     {% csrf_token %}
     <input type="submit" value="Log in as admin">
 </form>
+</div>
 <p>{{ status_code }}</p>
 </body>
 </html>
