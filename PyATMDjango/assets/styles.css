@@ -1,6 +1,7 @@
 body{
     background-color: #0f121f;
     background-image: url(earth.jpg);
+    background-size:cover;
     background-repeat-y: no-repeat;
     color: #fff;
 }

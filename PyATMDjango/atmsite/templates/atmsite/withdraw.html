@@ -24,6 +24,10 @@
     <input type="submit" value="Submit">
 </form>
 
+<form action="{% url 'account_menu' %}" method="get">
+    <button type="submit">Return to menu</button>
+</form>
+
 {% for error in errors %}
     <p>{{ error }}</p>
 {% endfor %}
