@@ -3,24 +3,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title> Account menu</title>
+    <link rel="icon" type="image/png" href="{% static 'credit-card-4x.png' %}" />
     <link rel="stylesheet" href="{% static 'styles.css' %}">
         <link href="https://fonts.googleapis.com/css?family=Acme&display=swap" rel="stylesheet">
 </head>
 <body>
-<p>hello {{ account.username }}, this is the account menu page</p>
+  <h1> Account Menu </h1>
+
+<div class="credentials">
+  <h1> hello {{ account.username }} </h1>
 <form action="{% url 'index' %}" method="get">
     <button type="submit">Log Out</button>
 </form>
 <form action="{% url 'withdraw' %}" method="get">
-    <button type="submit">get a money</button>
+    <button type="submit">Withdraw</button>
 </form>
 <form action="{% url 'deposit' %}" method="get">
-    <button type="submit">put a money in </button>
+    <button type="submit">Deposit </button>
 </form>
 <form action="{% url 'view_balance' %}" method="get">
-    <button type="submit">look at ya monies</button>
+    <button type="submit">View Balance</button>
 </form>
+</div>
 {{ status_message }}
 </body>
 </html>
