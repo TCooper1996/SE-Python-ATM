@@ -1,11 +1,14 @@
+{% load static from staticfiles%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Acme&display=swap" rel="stylesheet">
 </head>
 <body>
-How many money ya want
+<h1>How many money ya want </h1>
 <form action="{% url 'withdraw_post' %}" method="post">
     {% csrf_token %}
     <input type="submit" name="amount" value="20">
@@ -19,6 +22,10 @@ How many money ya want
         Custom Amount<input type="text" name="amount">
     </label>
     <input type="submit" value="Submit">
+</form>
+
+<form action="{% url 'account_menu' %}" method="get">
+    <button type="submit">Return to menu</button>
 </form>
 
 {% for error in errors %}

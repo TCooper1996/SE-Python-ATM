@@ -1,11 +1,15 @@
+{% load static from staticfiles%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+        <link href="https://fonts.googleapis.com/css?family=Acme&display=swap" rel="stylesheet">
 </head>
 <body>
-<p>{{ account.username }}, you have this much $ {{ account.balance }}</p>
+  <h1> Balance </h1>
+<p>{{ account.username }}, you have 33 $ {{ account.balance }}</p>
 <form action="{% url 'account_menu' %}" method="get">
     <button type="submit">Return to menu</button>
 </form>
