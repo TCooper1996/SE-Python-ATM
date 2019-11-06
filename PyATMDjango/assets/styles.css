@@ -13,8 +13,19 @@ h1{
   text-align: center;
 }
 
+.errorClass{
+  color: #77212e;
+  position: relative;
+  animation-name: up_down;
+  animation-duration: 0.2s;
+  animation-iteration-count: 4;
+}
 
+@keyframes up_down {
+  from {color: #77212e; top: 0px; }
+  to {color: #FE840E; top: 10px;}
 
+}
 .credentials input{
   display: block;
   padding: 3px;
@@ -24,11 +35,32 @@ h1{
 
 }
 
+ button{
+
+  padding: 3px;
+    margin: 5px;
+    border-radius: 5px;
+
+
+}
+
+button:hover{
+  background-color: #ffcc11;
+}
+
+input:hover{
+  background-color: #ffcc11;
+
+}
+
 .credentials {
+
   padding: 10px;
-  border: 1px solid black;
+  border: 3px groove #cccccc;
+  border-radius: 5px;
   position: relative;
-  padding-bottom: 20px;
+
+
 
 }
 
@@ -37,10 +69,11 @@ h1{
 .create-account{
   margin-top: 5px;
   padding: 10px;
-  border: 1px solid black;
+  border: 3px groove #cccccc;
+  border-radius: 5px;
   position: relative;
   padding-bottom: 40px;
-  
+
 
 
 }
@@ -49,4 +82,9 @@ h1{
   display: block;
   margin: 10px;
   border-radius: 5px;
+}
+.account-options {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    grid-gap: 5px;
 }
