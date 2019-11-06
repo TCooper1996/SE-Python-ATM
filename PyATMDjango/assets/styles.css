@@ -26,15 +26,27 @@ h1{
 
 .credentials {
   padding: 10px;
-  border: 1px solid #00dba0;
+  border: 1px solid black;
   position: relative;
-  padding-bottom: 40px;
+  padding-bottom: 20px;
+
 }
+
+
 
 .create-account{
   margin-top: 5px;
   padding: 10px;
-  border: 1px solid #00dba0;
+  border: 1px solid black;
   position: relative;
   padding-bottom: 40px;
+  
+
+
+}
+
+.create-account input{
+  display: block;
+  margin: 10px;
+  border-radius: 5px;
 }
