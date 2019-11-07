@@ -25,16 +25,17 @@
     <label for="address_entry">Enter address</label>
     <input id="password_entry" type="text" name="address" value="">
     <br>
-    <input type="submit" value="Submit">
+    <button type="submit"> Submit </button>
 </form>
 
 <form  action="{% url 'index' %}" method="get">
-    <input type="submit" value="Return to Log in">
+    <button type="submit" > Return to Log in </button>
 </form>
 </div>
-
+<div class="errorClass">
 {% for error in errors %}
-    <p class="errorClass">{{ error }}</p>
+    <p >{{ error }}</p>
 {% endfor %}
+</div>
 </body>
 </html>

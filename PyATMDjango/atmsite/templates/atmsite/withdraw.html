@@ -9,27 +9,27 @@
         <link href="https://fonts.googleapis.com/css?family=Big+Shoulders+Display&display=swap" rel="stylesheet">
 </head>
 <body>
-
-<form class="credentials" action="{% url 'withdraw_post' %}" method="post">
+<div class ="credentials" >
+<form action="{% url 'withdraw_post' %}" method="post">
   <h1>Withdraw </h1>
     {% csrf_token %}
-    <input type="submit" name="amount" value="20">
-    <input type="submit" name="amount" value="40">
-    <input type="submit" name="amount" value="60">
-    <input type="submit" name="amount" value="80">
+    <button type="submit" name="amount" value = "20" > 20 </button>
+    <button type="submit" name="amount" value="40" > 40 </button>
+    <button type="submit" name="amount" value="60"> 60 </button>
+    <button type="submit" name="amount" value="80"> 80 </button>
 </form>
 <form action="{% url 'withdraw_post' %}" method="post">
     {% csrf_token %}
     <label>
         Custom Amount<input type="text" name="amount">
     </label>
-    <input type="submit" value="Submit">
+    <button type="submit" > Submit </button>
 </form>
 
 <form action="{% url 'account_menu' %}" method="get">
     <button type="submit">Return to menu</button>
 </form>
-
+</div>
 {% for error in errors %}
     <p class="errorClass">{{ error }}</p>
 {% endfor %}
