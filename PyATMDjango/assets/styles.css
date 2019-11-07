@@ -6,7 +6,7 @@ body{
 }
 
 body *{
-    font-family: 'Acme', sans-serif;
+    font-family: 'Big Shoulders Display', cursive;
 }
 
 h1{
@@ -14,7 +14,7 @@ h1{
 }
 
 .errorClass{
-  color: #77212e;
+  color: #ffd662;
   position: relative;
   animation-name: up_down;
   animation-duration: 0.2s;
@@ -22,8 +22,8 @@ h1{
 }
 
 @keyframes up_down {
-  from {color: #77212e; top: 0px; }
-  to {color: #FE840E; top: 10px;}
+  from {color: #ffd662; top: 0px; }
+  to {color: #fe840e; top: 10px;}
 
 }
 .credentials input{

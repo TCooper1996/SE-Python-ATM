@@ -3,15 +3,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Balance</title>
+    <link rel="icon" type="image/png" href="{% static 'credit-card-4x.png' %}" />
     <link rel="stylesheet" href="{% static 'styles.css' %}">
-        <link href="https://fonts.googleapis.com/css?family=Acme&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css?family=Big+Shoulders+Display&display=swap" rel="stylesheet">
 </head>
 <body>
   <h1> Balance </h1>
-<p>{{ account.username }}, you have 33 $ {{ account.balance }}</p>
+  <div class="credentials">
+    <h1> {{ account.username }} </h1>
+<p>Balance $ {{ account.balance }}</p>
 <form action="{% url 'account_menu' %}" method="get">
     <button type="submit">Return to menu</button>
 </form>
+</div>
 </body>
 </html>

@@ -3,13 +3,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Withdraw</title>
+      <link rel="icon" type="image/png" href="{% static 'credit-card-4x.png' %}" />
     <link rel="stylesheet" href="{% static 'styles.css' %}">
-        <link href="https://fonts.googleapis.com/css?family=Acme&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Big+Shoulders+Display&display=swap" rel="stylesheet">
 </head>
 <body>
-<h1>How many money ya want </h1>
-<form action="{% url 'withdraw_post' %}" method="post">
+
+<form class="credentials" action="{% url 'withdraw_post' %}" method="post">
+  <h1>Withdraw </h1>
     {% csrf_token %}
     <input type="submit" name="amount" value="20">
     <input type="submit" name="amount" value="40">
@@ -25,7 +27,7 @@
 </form>
 
 {% for error in errors %}
-    <p>{{ error }}</p>
+    <p class="errorClass">{{ error }}</p>
 {% endfor %}
 
 </body>
