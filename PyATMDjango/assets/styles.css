@@ -13,6 +13,7 @@ body *{
 
 h1{
   text-align: center;
+  
 }
 
 .errorClass{
@@ -30,7 +31,7 @@ h1{
 
 }
 .credentials input{
-  display: block;
+
 
     margin: 1px;
     border-radius: 5px;
@@ -73,8 +74,23 @@ input:hover{
 
 
 }
+.credentials_withdraw {
+  margin-top: 5px;
+  padding: 3px;
+  border: 3px groove #cccccc;
+  border-radius: 5px;
+  position: relative;
 
 
+
+}
+
+.credentials_withdraw input{
+
+
+  border-radius: 5px;
+
+}
 
 .create-account{
   margin-top: 5px;
