@@ -155,3 +155,28 @@ def authenticate_account(request):
 
     except IndexError:
         return render(request, 'atmsite/index.html', {'error': 'Unknown or Incorrect username/password'})
+
+
+def transfer(request):
+    return render(request, 'atmsite/transfer.html')
+
+
+def transfer_post(request):
+    try:
+        # Get currently logged in user, or redirect to log in if there is none.
+        if request.COOKIES.get('current_account'):
+            sending_account = Account.objects.get(id=request.COOKIES.get('current_account'))
+        else:
+            return HttpResponseRedirect(reverse('index'))
+        receiving_username = request.POST['username']
+        amount = request.POST['amount']
+        receiving_account = Account.objects.filter(username__exact=receiving_username)[0]
+        if sending_account.balance > amount:
+            sending_account.balance -= amount
+            receiving_account += amount
+            return HttpResponseRedirect(reverse('account_menu', kwargs={'status_code': 1}))
+        else:
+            return render(request, 'atmsite/transfer.html', {'errors': ["Insufficient funds to make transfer"]})
+    except IndexError:
+        return render(request, 'atmsite/transfer.html', {'errors': ["User does not exist."]})
+

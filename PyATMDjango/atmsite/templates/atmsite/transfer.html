@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+transfer money
+<form action="{% url 'transfer_post' %}" method="post">
+    {% csrf_token %}
+    <label for="receiving_account">To:</label>
+    <input id="receiving_account" type="text" name="username" value="">
+    <label for="amount">amount:</label>
+    <input id="amount" type="text" name="amount" value="">
+    <input type="submit" value="Send">
+
+</form>
+
+<form action="{% url 'account_menu' %}" method="get">
+    <button type="submit">Return to menu</button>
+</form>
+{% for error in errors %}
+    <p class="errorClass">{{ error }}</p>
+{% endfor %}
+</body>
+</html>

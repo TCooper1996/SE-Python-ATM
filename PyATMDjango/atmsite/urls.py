@@ -15,4 +15,6 @@ urlpatterns = [
         path('deposit/', views.deposit, name='deposit'),
         path('depositpost/', views.deposit_post, name='deposit_post'),
         path('viewbalance/', views.view_balance, name='view_balance'),
+        path('transfer/', views.transfer, name='transfer'),
+        path('transferpost/', views.transfer_post, name='transfer_post'),
         ]
