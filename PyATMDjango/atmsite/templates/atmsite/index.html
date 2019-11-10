@@ -28,7 +28,7 @@
     {% csrf_token %}
     <input type="submit" value="Create Account">
 </form>
-<form action="{% url 'admin:login' %}" method="get">
+<form action="{% url 'admin_login' %}" method="get">
     {% csrf_token %}
     <input type="submit" value="Log in as admin">
 </form>

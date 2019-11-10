@@ -6,13 +6,14 @@ from random import randint
 import re
 
 username_pattern = "^[a-zA-Z].{5,19}"
-password_pattern = "(?=.*[!@#$%^&*])[0-9a-zA-Z!@#$%]{8,20}"
-phone_pattern = "[0-9]{10}"
+password_pattern = "(?=.*[!@#$%^&*\(\\)])[0-9a-zA-Z!@#$%\(\\)]{8,20}"
+phone_pattern = "[0-9]+"
 address_pattern = ".+"
+admin_password = "adminpass"
 
-from .models import Account, Card
+from .models import Account, Card, ATM
 
-status_codes = {0: '', 1: "Transaction Succeeded", 2: "You are not logged in"}
+status_codes = {0: '', 1: "Transaction Succeeded", 2: "You are not logged in", 3: "Account created"}
 
 
 # Create your views here.
@@ -22,7 +23,14 @@ def index(request, status_code=0):
     if request.COOKIES.get('current_account'):
         response.delete_cookie('current_account')
 
+    if request.COOKIES.get('admin'):
+        response.delete_cookie('admin')
+
     return response
+
+
+def admin_login(request):
+    return render(request, "atmsite/admin_login.html")
 
 
 def create_account(request):
@@ -45,6 +53,10 @@ def account_menu(request, status_code=0):
     else:
         a = Account.objects.get(id=current_account_id)
         return render(request, 'atmsite/account_menu.html', {"account": a, "status_message": status_codes[status_code]})
+
+
+def admin_menu(request):
+    return render(request, 'atmsite/admin_menu.html')
 
 
 def deposit(request):
@@ -116,9 +128,9 @@ def create_account_post(request):
         if re_fails(username_pattern, name):
             errors.append("ERROR: Username must begin with a letter and be at least 6 characters long.")
         if re_fails(password_pattern, password):
-            errors.append("ERROR: Password must be 8 and 20 characters and contain at least one character from [!@#$%^&*]")
+            errors.append("ERROR: Password must be 8 and 20 characters and contain at least one character in !@#$%^&*()")
         if re_fails(phone_pattern, phone):
-            errors.append("ERROR: Phone number must be numeric and be between 10 characters long.")
+            errors.append("ERROR: Phone number must be numeric long.")
         if re_fails(address_pattern, address):
             errors.append("ERROR: Address field is required.")
         if Account.objects.filter(username__exact=name).exists():
@@ -129,7 +141,7 @@ def create_account_post(request):
             account = Account(username=name, password=password, phone_number=phone, address=address)
             account.account_number = randint(0, 10000)
             account.save()
-            return HttpResponseRedirect(reverse('account_menu'))
+            return HttpResponseRedirect(reverse('admin_menu'), kwargs={'status_code': 3})
 
         # Branch if an error was recorded, reload account creation page
         else:
@@ -137,6 +149,20 @@ def create_account_post(request):
 
     except KeyError:
         return render(request, 'atmsite/create_account.html', {'errors': errors})
+
+
+def create_card(request):
+    return HttpResponse("Create a cardo")
+
+
+def atm_listing(request):
+    atms = ATM.objects.all()
+    return render(request, 'atmsite/atm_listing.html', {'atms': atms})
+
+
+def atm_state(request):
+    atm = request.GET.get('atm')
+    return render(request, 'atmsite/machine_state.html', )
 
 
 # This view is called after the log in form is submitted from the index page.
@@ -157,6 +183,16 @@ def authenticate_account(request):
         return render(request, 'atmsite/index.html', {'error': 'Unknown or Incorrect username/password'})
 
 
+def authenticate_admin(request):
+    password = request.POST['password']
+    if password == admin_password:
+        response = HttpResponseRedirect(reverse('admin_menu'))
+        response.set_cookie('admin', True)
+        return response
+    else:
+        return render(request, 'atmsite/index.html', {'error': 'Incorrect password'})
+
+
 def transfer(request):
     return render(request, 'atmsite/transfer.html')
 
@@ -169,14 +205,19 @@ def transfer_post(request):
         else:
             return HttpResponseRedirect(reverse('index'))
         receiving_username = request.POST['username']
-        amount = request.POST['amount']
+        amount = float(request.POST['amount'])
         receiving_account = Account.objects.filter(username__exact=receiving_username)[0]
         if sending_account.balance > amount:
             sending_account.balance -= amount
-            receiving_account += amount
+            receiving_account.balance += amount
+            sending_account.save()
+            receiving_account.save()
             return HttpResponseRedirect(reverse('account_menu', kwargs={'status_code': 1}))
         else:
             return render(request, 'atmsite/transfer.html', {'errors': ["Insufficient funds to make transfer"]})
     except IndexError:
         return render(request, 'atmsite/transfer.html', {'errors': ["User does not exist."]})
+
+    except ValueError:
+        return render(request, 'atmsite/transfer.html', {'errors': ["Amount field must be a number"]})
 

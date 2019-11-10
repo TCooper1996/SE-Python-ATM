@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form action="{% url 'atm_listing' %}" method="get">
+    {% csrf_token %}
+    <input type="submit" value="View ATMs">
+</form>
+<form action="{% url 'create_account' %}" method="get">
+    {% csrf_token %}
+    <input type="submit" value="Create user account">
+</form>
+<form action="{% url 'create_card' %}" method="get">
+    {% csrf_token %}
+    <input type="submit" value="Create new card">
+</form>
+<form action="{% url 'index' %}" method="get">
+    {% csrf_token %}
+    <input type="submit" value="Exit">
+</form>
+</body>
+</html>

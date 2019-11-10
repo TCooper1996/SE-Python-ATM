@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+Select an ATM by location
+<form action="{% url 'atm_state' %}" method="get">
+    {% csrf_token %}
+    {% for atm in atms %}
+        <input type="submit" name="atm" value="{{ atm.current_location }}">
+    {% endfor %}
+</form>
+<form  action="{% url 'admin_menu' %}" method="get">
+    <input type="submit" value="Return">
+</form>
+</body>
+</html>
