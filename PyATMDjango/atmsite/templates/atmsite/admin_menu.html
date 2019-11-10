@@ -1,26 +1,33 @@
+{%load static from staticfiles%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title> Admin menu</title>
+
+    <link rel="icon" type="image/png" href="{% static 'credit-card-4x.png' %}" />
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-
+<div class="credentials">
+  <h1> Admin Menu </h1>
 <form action="{% url 'atm_listing' %}" method="get">
     {% csrf_token %}
-    <input type="submit" value="View ATMs">
+    <button type="submit" > View ATMs </button>
 </form>
 <form action="{% url 'create_account' %}" method="get">
     {% csrf_token %}
-    <input type="submit" value="Create user account">
+    <button type="submit" > Create user account </button>
 </form>
 <form action="{% url 'create_card' %}" method="get">
     {% csrf_token %}
-    <input type="submit" value="Create new card">
+    <button type="submit" > Create Card </button>
 </form>
 <form action="{% url 'index' %}" method="get">
     {% csrf_token %}
-    <input type="submit" value="Exit">
+    <button type="submit" > Exit </button>
 </form>
+</div>
 </body>
 </html>

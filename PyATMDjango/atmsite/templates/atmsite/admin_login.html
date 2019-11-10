@@ -6,23 +6,25 @@
     <title>Home</title>
     <link rel="icon" type="image/png" href="{% static 'credit-card-4x.png' %}" />
     <link rel="stylesheet" href="{% static 'styles.css' %}">
-    <link href="https://fonts.googleapis.com/css?family=Big+Shoulders+Display&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
 <h1> Python ATM </h1>
 {% if error %}<p class = "errorClass">{{ error }}</p>{%  endif %}
-<form class="credentials" action="{%  url 'authenticate_admin' %}" method="post">
+<div class="credentials">
+<form action="{%  url 'authenticate_admin' %}" method="post">
     {% csrf_token %}
     <h1> Sign in </h1>
     <label for="password_entry">Enter administrative password</label>
     <input id="password_entry" type="password" name="password" value="">
     <br>
-    <input type="submit" value="Log in">
+    <button type="submit" >Log in </button>
 </form>
 <form action="{% url 'index' %}" method="get">
     {% csrf_token %}
-    <input type="submit" value="Return to main log in">
+    <button type="submit">Return to main login</button>
 </form>
+</div>
 <p>{{ status_code }}</p>
 </body>
 </html>
