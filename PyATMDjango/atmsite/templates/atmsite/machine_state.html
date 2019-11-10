@@ -1,10 +1,17 @@
+{% load static from staticfiles%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>ATM info</title>
+    <link rel="icon" type="image/png" href="{% static 'credit-card-4x.png' %}" />
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+      <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-
+  <div class = "credentials">
+    <h1> {{current_atm.current_location}} info </h1>
+  <label for="minimum_balance">{{current_atm.minimum_balance}} </label> 
+</div>
 </body>
 </html>

@@ -162,7 +162,8 @@ def atm_listing(request):
 
 def atm_state(request):
     atm = request.GET.get('atm')
-    return render(request, 'atmsite/machine_state.html', )
+    current_atm = ATM.objects.get(current_location = atm)
+    return render(request, 'atmsite/machine_state.html', {'current_atm': current_atm} )
 
 
 # This view is called after the log in form is submitted from the index page.
