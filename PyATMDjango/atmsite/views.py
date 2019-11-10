@@ -192,6 +192,8 @@ def authenticate_admin(request):
     else:
         return render(request, 'atmsite/index.html', {'error': 'Incorrect password'})
 
+def toggle_card_status(request):
+    return HttpResponse("card toggle")
 
 def transfer(request):
     return render(request, 'atmsite/transfer.html')
@@ -220,4 +222,3 @@ def transfer_post(request):
 
     except ValueError:
         return render(request, 'atmsite/transfer.html', {'errors': ["Amount field must be a number"]})
-
