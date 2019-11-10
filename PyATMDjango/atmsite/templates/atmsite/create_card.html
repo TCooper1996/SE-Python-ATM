@@ -1,0 +1,47 @@
+{%  load static from staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Account Creation</title>
+    <link rel="icon" type="image/png" href="{% static 'credit-card-4x.png' %}" />
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+    <link href="https://fonts.googleapis.com/css?family=Big+Shoulders+Display&display=swap" rel="stylesheet">
+</head>
+<body>
+<form action="{% url 'create_card_post' %}" method="post">
+    {% csrf_token %}
+    <label for="username_entry">Enter Username</label>
+    <input id="username_entry" type="text" name="username" value="">
+    <br>
+    <label for="account_number_entry">Enter Account Number</label>
+    <input id="account_number_entry" type="text" name="number" value="">
+    <br>
+    <label for="pin_entry">Enter Pin</label>
+    <input id="pin_entry" type="text" name="pin" value="">
+    <br>
+    <label for="date_entry">Enter Activation Date</label>
+    <input id="date_entry" type="date" name="date" value={{ current_date }}>
+    <br>
+    <label for="expiry_entry">Enter Expiration Date</label>
+    <input id="expiry_entry" type="date" name="expiry" value={{ expiry_date }}>
+    <br>
+    <label for="address_entry">Enter User's Address</label>
+    <input id="address_entry" type="text" name="address" value="">
+    <br>
+    <label for="balance_entry">Enter Initial Balance</label>
+    <input id="balance_entry" type="text" name="balance" value="">
+    <br>
+    <label for="phone_number_entry">Enter User's Phone Number</label>
+    <input id="phone_number_entry" type="text" name="phone" value="">
+    <br>
+    <label for="status_entry">Enable upon creation?</label>
+    <input id="status_entry" type="checkbox" name="active" value="">
+    <br>
+    <input type="submit" value="Create Card">
+</form>
+{% for error in errors %}
+    <p class="errorClass">{{ error }}</p>
+{% endfor %}
+</body>
+</html>

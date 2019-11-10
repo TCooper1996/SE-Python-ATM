@@ -1,19 +1,23 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotFound
 from django.shortcuts import render
 from django.urls import reverse
+from django.utils import timezone
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from random import randint
 import re
+from datetime import datetime, date, timedelta
 
 username_pattern = "^[a-zA-Z].{5,19}"
 password_pattern = "(?=.*[!@#$%^&*\(\\)])[0-9a-zA-Z!@#$%\(\\)]{8,20}"
 phone_pattern = "[0-9]+"
 address_pattern = ".+"
 admin_password = "adminpass"
+account_number_pattern = "[0-9]{1,10}"
+pin_pattern = "[0-9]{1,4}"
 
 from .models import Account, Card, ATM
 
-status_codes = {0: '', 1: "Transaction Succeeded", 2: "You are not logged in", 3: "Account created"}
+status_codes = {0: '', 1: "Transaction Succeeded", 2: "You are not logged in", 3: "Account created", 4: "Card Created"}
 
 
 # Create your views here.
@@ -55,8 +59,8 @@ def account_menu(request, status_code=0):
         return render(request, 'atmsite/account_menu.html', {"account": a, "status_message": status_codes[status_code]})
 
 
-def admin_menu(request):
-    return render(request, 'atmsite/admin_menu.html')
+def admin_menu(request, status_code=0):
+    return render(request, 'atmsite/admin_menu.html', {"status_message": status_codes[status_code]})
 
 
 def deposit(request):
@@ -130,7 +134,7 @@ def create_account_post(request):
         if re_fails(password_pattern, password):
             errors.append("ERROR: Password must be 8 and 20 characters and contain at least one character in !@#$%^&*()")
         if re_fails(phone_pattern, phone):
-            errors.append("ERROR: Phone number must be numeric long.")
+            errors.append("ERROR: Phone number must be numeric.")
         if re_fails(address_pattern, address):
             errors.append("ERROR: Address field is required.")
         if Account.objects.filter(username__exact=name).exists():
@@ -141,7 +145,7 @@ def create_account_post(request):
             account = Account(username=name, password=password, phone_number=phone, address=address)
             account.account_number = randint(0, 10000)
             account.save()
-            return HttpResponseRedirect(reverse('admin_menu'), kwargs={'status_code': 3})
+            return HttpResponseRedirect(reverse('admin_menu', kwargs={'status_code': 3}))
 
         # Branch if an error was recorded, reload account creation page
         else:
@@ -152,7 +156,66 @@ def create_account_post(request):
 
 
 def create_card(request):
-    return HttpResponse("Create a cardo")
+    errors = []
+    date = timezone.now().date().strftime("%Y-%m-%d")
+    expiry_date = (timezone.now() + timedelta(weeks=104)).date().strftime("%Y-%m-%d")
+    return render(request, 'atmsite/create_card.html', {'errors': errors, 'current_date': date, 'expiry_date': expiry_date})
+
+
+def create_card_post(request):
+    errors = []
+    try:
+        name = request.POST['username']
+        number = request.POST['number']
+        pin = request.POST['pin']
+        activation_date = datetime.strptime(request.POST['date'], "%Y-%m-%d").date()
+        expiry = datetime.strptime(request.POST['expiry'], "%Y-%m-%d").date()
+        address = request.POST['address']
+        balance = float(request.POST['balance'])
+        phone = request.POST['phone']
+
+        # Anonymous function that returns true if the given val fails to match the regex pattern, pat
+        re_fails = lambda pat, val: re.search(pat, val) is None
+
+        if not Account.objects.filter(username__exact=name).exists():
+            errors.append("ERROR: User does not exist")
+        if re_fails(account_number_pattern, number):
+            errors.append("ERROR: Password must be 8 and 20 characters and contain at least one character in !@#$%^&*()")
+        if re_fails(pin_pattern, pin):
+            errors.append("ERROR: Phone number must be numeric long.")
+        if activation_date < datetime.today().date():
+            errors.append("ERROR: Activation date cannot be prior to today's date.")
+        if expiry < activation_date:
+            errors.append("ERROR: Expiration date cannot be prior to activation date.")
+        if re_fails(address_pattern, address):
+            errors.append("ERROR: Address field is required.")
+        if balance < 0:
+            errors.append("ERROR: Initial balance cannot be negative.")
+        if re_fails(phone_pattern, phone):
+            errors.append("ERROR: Phone number must be numeric.")
+        if Card.objects.filter(card_number__exact=number).exists():
+            errors.append("ERROR: Card number is taken.")
+
+        # Branch if no error recorded
+        if not errors:
+            account = Account.objects.filter(username__exact=name)[0]
+            status = "Active" if "status" in request.POST else "Inactive"
+            card = Card(account=account, card_number=int(number), pin=int(pin), date_issued=request.POST['date'],
+                        expiry_date=request.POST['expiry'], address=address, status=status)
+            card.save()
+            return HttpResponseRedirect(reverse('admin_menu', kwargs={'status_code': 4}))
+
+        # Branch if an error was recorded, reload account creation page
+        else:
+            current_date = timezone.now().date().strftime("%Y-%m-%d")
+            expiry_date = (timezone.now() + timedelta(weeks=104)).date().strftime("%Y-%m-%d")
+            return render(request, 'atmsite/create_card.html', {'errors': errors, 'current_date': current_date, 'expiry':expiry_date})
+
+    except ValueError:
+        errors.append("ERROR: Balance must be numeric")
+        current_date = timezone.now().date().strftime("%Y-%m-%d")
+        expiry_date = (timezone.now() + timedelta(weeks=104)).date().strftime("%Y-%m-%d")
+        return render(request, 'atmsite/create_card.html', {'errors': errors, 'current_date': current_date, 'expiry_date':expiry_date})
 
 
 def atm_listing(request):
@@ -161,8 +224,12 @@ def atm_listing(request):
 
 
 def atm_state(request):
-    atm = request.GET.get('atm')
-    return render(request, 'atmsite/machine_state.html', )
+    atm_location = request.GET.get('atm')
+    try:
+        atm = ATM.objects.filter(current_location__exact=atm_location)[0]
+        return render(request, 'atmsite/atm_state.html', {'atm': atm})
+    except IndexError:
+        return HttpResponseNotFound('<h1>Page not found</h1>')
 
 
 # This view is called after the log in form is submitted from the index page.

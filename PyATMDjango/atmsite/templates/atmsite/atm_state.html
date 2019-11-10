@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+Location: {{ atm.current_location }}<br>
+current balance: {{ atm.current_balance }}<br>
+next maintenance date: {{ atm.next_maintenance_date }}<br>
+last refill date: {{ atm.last_refill_date }}
+<form  action="{% url 'atm_listing' %}" method="get">
+    <input type="submit" value="Return to listing">
+</form>
+<form  action="{% url 'admin_menu' %}" method="get">
+    <input type="submit" value="Return to admin menu">
+</form>
+</body>
+</html>
