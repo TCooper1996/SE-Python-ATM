@@ -6,13 +6,13 @@
     <title>Balance</title>
     <link rel="icon" type="image/png" href="{% static 'credit-card-4x.png' %}" />
     <link rel="stylesheet" href="{% static 'styles.css' %}">
-      <link href="https://fonts.googleapis.com/css?family=Big+Shoulders+Display&display=swap" rel="stylesheet">
+     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
   <h1> Balance </h1>
   <div class="credentials">
     <h1> {{ account.username }} </h1>
-<p>Balance $ {{ account.balance }}</p>
+<h1>Balance ${{ account.balance }}</h1>
 <form action="{% url 'account_menu' %}" method="get">
     <button type="submit">Return to menu</button>
 </form>
