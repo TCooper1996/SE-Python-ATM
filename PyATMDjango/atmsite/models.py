@@ -22,9 +22,10 @@ class Card(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
     card_number = models.IntegerField(default=0)
     pin = models.IntegerField()
-    date_issued = models.DateTimeField()
-    expiry_date = models.DateTimeField()
+    date_issued = models.DateField()
+    expiry_date = models.DateField()
     status = models.CharField(max_length=8, default="Active")
+    address = models.CharField(max_length=100)
 
     def is_valid(self):
         # Assert essential fields are non-null except account_hash

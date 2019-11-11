@@ -3,33 +3,36 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Withdraw</title>
+      <link rel="icon" type="image/png" href="{% static 'credit-card-4x.png' %}" />
     <link rel="stylesheet" href="{% static 'styles.css' %}">
-        <link href="https://fonts.googleapis.com/css?family=Acme&display=swap" rel="stylesheet">
+         <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-<h1>How many money ya want </h1>
-<form action="{% url 'withdraw_post' %}" method="post">
-    {% csrf_token %}
-    <input type="submit" name="amount" value="20">
-    <input type="submit" name="amount" value="40">
-    <input type="submit" name="amount" value="60">
-    <input type="submit" name="amount" value="80">
-</form>
-<form action="{% url 'withdraw_post' %}" method="post">
-    {% csrf_token %}
-    <label>
-        Custom Amount<input type="text" name="amount">
-    </label>
-    <input type="submit" value="Submit">
-</form>
 
-<form action="{% url 'account_menu' %}" method="get">
-    <button type="submit">Return to menu</button>
-</form>
+  <div class ="credentials" >
+  <form action="{% url 'withdraw_post' %}" method="post">
+    <h1>Withdraw </h1>
+      {% csrf_token %}
+      <button type="submit" name="amount" value = "20" > 20 </button>
+      <button type="submit" name="amount" value="40" > 40 </button>
+      <button type="submit" name="amount" value="60"> 60 </button>
+      <button type="submit" name="amount" value="80"> 80 </button>
+  </form>
+  <form action="{% url 'withdraw_post' %}" method="post">
+      {% csrf_token %}
+      <label>
+          Custom Amount<input type="text" name="amount">
+      </label>
+      <button type="submit" > Submit </button>
+  </form>
 
+  <form action="{% url 'account_menu' %}" method="get">
+      <button type="submit">Return to menu</button>
+  </form>
+  </div>
 {% for error in errors %}
-    <p>{{ error }}</p>
+    <p class="errorClass">{{ error }}</p>
 {% endfor %}
 
 </body>

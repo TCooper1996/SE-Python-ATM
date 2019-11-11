@@ -6,7 +6,7 @@
     <title> Account menu</title>
     <link rel="icon" type="image/png" href="{% static 'credit-card-4x.png' %}" />
     <link rel="stylesheet" href="{% static 'styles.css' %}">
-        <link href="https://fonts.googleapis.com/css?family=Acme&display=swap" rel="stylesheet">
+      <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
   <h1> Account Menu </h1>
@@ -24,6 +24,12 @@
 </form>
 <form action="{% url 'view_balance' %}" method="get">
     <button type="submit">View Balance</button>
+</form>
+<form action="{% url 'transfer' %}" method="get">
+    <button type="submit">Transfer</button>
+</form>
+<form action="{% url 'toggle_card_status' %}" method="get">
+    <button type="submit">Transfer</button>
 </form>
 </div>
 {{ status_message }}
