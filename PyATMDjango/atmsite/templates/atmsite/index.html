@@ -22,12 +22,15 @@
     <label for="password_entry">Enter password</label>
     <input id="password_entry" type="password" name="password" value="">
     <br>
+    <label for="pin">Enter pin:</label>
+    <input id="pin" type="password" name="pin" value="">
     <button type="submit" >Log in </button>
 </form>
 <form action="{% url 'admin_login' %}" method="get">
     {% csrf_token %}
     <button type="submit" >Log in as admin </button>
 </form>
+
 
 
 
