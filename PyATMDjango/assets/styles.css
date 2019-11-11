@@ -2,12 +2,10 @@ body{
     background-color: #0f121f;
     background-image: url(earth.jpg);
     background-size:cover;
-    background-repeat-y: no-repeat;
     color: #fff;
 }
 
 body *{
-    font-family: 'Big Shoulders Display',cursive;
     font-family: 'Press Start 2P', cursive;
 }
 

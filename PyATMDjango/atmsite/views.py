@@ -7,12 +7,13 @@ from random import randint
 import re
 from datetime import datetime, date, timedelta
 
+admin_password = "adminpass"
+
 username_pattern = "^[a-zA-Z].{5,19}"
 password_pattern = "(?=.*[!@#$%^&*\(\\)])[0-9a-zA-Z!@#$%\(\\)]{8,20}"
 phone_pattern = "[0-9]+"
 address_pattern = ".+"
-admin_password = "adminpass"
-account_number_pattern = "[0-9]{1,10}"
+card_number_pattern = "[0-9]{1,10}"
 pin_pattern = "[0-9]{1,4}"
 
 from .models import Account, Card, ATM
@@ -159,7 +160,15 @@ def create_card(request):
     errors = []
     date = timezone.now().date().strftime("%Y-%m-%d")
     expiry_date = (timezone.now() + timedelta(weeks=104)).date().strftime("%Y-%m-%d")
-    return render(request, 'atmsite/create_card.html', {'errors': errors, 'current_date': date, 'expiry_date': expiry_date})
+    card_number = randint(0, 999999999)
+    card_numbers = [card.card_number for card in Card.objects.all()]
+    users = Account.objects.all()
+    # Randomize card_number until a unique one is found.
+    while card_number in card_numbers:
+        card_number = randint(0, 999999999)
+    return render(request, 'atmsite/create_card.html', {'errors': errors, 'current_date': date,
+                                                        'expiry_date': expiry_date, 'random_card_number': card_number,
+                                                        'users': users})
 
 
 def create_card_post(request):
@@ -179,8 +188,8 @@ def create_card_post(request):
 
         if not Account.objects.filter(username__exact=name).exists():
             errors.append("ERROR: User does not exist")
-        if re_fails(account_number_pattern, number):
-            errors.append("ERROR: Password must be 8 and 20 characters and contain at least one character in !@#$%^&*()")
+        if re_fails(card_number_pattern, number):
+            errors.append("ERROR: Card number must be 1-10 digits")
         if re_fails(pin_pattern, pin):
             errors.append("ERROR: Phone number must be numeric long.")
         if activation_date < datetime.today().date():
@@ -288,3 +297,14 @@ def transfer_post(request):
     except ValueError:
         return render(request, 'atmsite/transfer.html', {'errors': ["Amount field must be a number"]})
 
+
+def manage_cards(request):
+
+    account_id = request.COOKIES.get('current_account')
+    account = Account.objects.filter(id=account_id)[0]
+    cards = Card.objects.filter(account=account)
+    return render(request, 'atmsite/manage_cards.html', {'cards': cards, 'checked': ""})
+
+
+def manage_cards_post(request):
+    pass

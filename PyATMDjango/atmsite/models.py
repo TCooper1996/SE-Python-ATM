@@ -24,7 +24,7 @@ class Card(models.Model):
     pin = models.IntegerField()
     date_issued = models.DateField()
     expiry_date = models.DateField()
-    status = models.CharField(max_length=8, default="Active")
+    active = models.BooleanField(default=True)
     address = models.CharField(max_length=100)
 
     def is_valid(self):

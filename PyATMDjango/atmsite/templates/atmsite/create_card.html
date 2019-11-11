@@ -12,10 +12,14 @@
 <form action="{% url 'create_card_post' %}" method="post">
     {% csrf_token %}
     <label for="username_entry">Enter Username</label>
-    <input id="username_entry" type="text" name="username" value="">
+    <select id="username_entry" name="username">
+        {% for user in users %}
+            <option value={{ user.username }}>{{ user.username }}</option>
+        {% endfor %}
+    </select>
     <br>
-    <label for="account_number_entry">Enter Account Number</label>
-    <input id="account_number_entry" type="text" name="number" value="">
+    <label for="card_number_entry">Enter Card Number</label>
+    <input id="card_number_entry" type="text" name="number" value={{ random_card_number }}>
     <br>
     <label for="pin_entry">Enter Pin</label>
     <input id="pin_entry" type="text" name="pin" value="">
