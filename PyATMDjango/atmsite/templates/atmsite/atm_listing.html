@@ -1,19 +1,25 @@
+{% load static from staticfiles%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>ATM Locations</title>
+    <link rel="icon" type="image/png" href="{% static 'credit-card-4x.png' %}" />
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+      <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-Select an ATM by location
+  <div class="credentials">
+<h1> Select an ATM by location </h1>
 <form action="{% url 'atm_state' %}" method="get">
     {% csrf_token %}
     {% for atm in atms %}
-        <input type="submit" name="atm" value="{{ atm.current_location }}">
+        <button type="submit" name="atm" value="{{ atm.current_location }}" > {{ atm.current_location }} </button>
     {% endfor %}
 </form>
 <form  action="{% url 'admin_menu' %}" method="get">
-    <input type="submit" value="Return">
+      <button type="submit" > Admin menu </button>
 </form>
+</div>
 </body>
 </html>

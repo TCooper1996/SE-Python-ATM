@@ -3,12 +3,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Account Creation</title>
+    <title>Card Creation</title>
     <link rel="icon" type="image/png" href="{% static 'credit-card-4x.png' %}" />
     <link rel="stylesheet" href="{% static 'styles.css' %}">
-    <link href="https://fonts.googleapis.com/css?family=Big+Shoulders+Display&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
 </head>
 <body>
+  <div class="credentials">
+    <h1> Card Creation </h1>
 <form action="{% url 'create_card_post' %}" method="post">
     {% csrf_token %}
     <label for="username_entry">Enter Username</label>
@@ -42,8 +45,12 @@
     <label for="status_entry">Enable upon creation?</label>
     <input id="status_entry" type="checkbox" name="active" value="">
     <br>
-    <input type="submit" value="Create Card">
+    <button type="submit" > Create Card </button>
 </form>
+<form  action="{% url 'admin_menu' %}" method="get">
+      <button type="submit" > Admin menu </button>
+</form>
+</div>
 {% for error in errors %}
     <p class="errorClass">{{ error }}</p>
 {% endfor %}
