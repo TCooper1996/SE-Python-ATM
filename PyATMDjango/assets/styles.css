@@ -15,6 +15,10 @@ h1{
   text-align: center;
 }
 
+h3{
+  text-align: center;
+}
+
 .errorClass{
   color: #c56250;
   background-color: #0f121f;

@@ -14,11 +14,11 @@
 <form action="{% url 'atm_state' %}" method="get">
     {% csrf_token %}
     {% for atm in atms %}
-        <input type="submit" name="atm" value="{{ atm.current_location }}">
+        <button type="submit" name="atm" value="{{ atm.current_location }}" > {{ atm.current_location }} </button>
     {% endfor %}
 </form>
 <form  action="{% url 'admin_menu' %}" method="get">
-    <input type="submit" value="Return">
+      <button type="submit" > Admin menu </button>
 </form>
 </div>
 </body>
