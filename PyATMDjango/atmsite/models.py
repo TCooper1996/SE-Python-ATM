@@ -33,7 +33,7 @@ class Card(models.Model):
                                          self.expiry_date, self.date_issued]))
 
     def __str__(self):
-        return self.card_number
+        return str(self.card_number)
 
 
 def get_next_maintenance_date():

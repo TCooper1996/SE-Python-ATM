@@ -18,7 +18,8 @@ pin_pattern = "[0-9]{1,4}"
 
 from .models import Account, Card, ATM
 
-status_codes = {0: '', 1: "Transaction Succeeded", 2: "You are not logged in", 3: "Account created", 4: "Card Created"}
+status_codes = {0: '', 1: "Transaction Succeeded", 2: "You are not logged in", 3: "Account created",
+                4: "Card Created", 5: "Data saved"}
 
 
 # Create your views here.
@@ -162,13 +163,14 @@ def create_card(request):
     expiry_date = (timezone.now() + timedelta(weeks=104)).date().strftime("%Y-%m-%d")
     card_number = randint(0, 999999999)
     card_numbers = [card.card_number for card in Card.objects.all()]
+    random_pin = randint(0, 9999)
     users = Account.objects.all()
     # Randomize card_number until a unique one is found.
     while card_number in card_numbers:
         card_number = randint(0, 999999999)
     return render(request, 'atmsite/create_card.html', {'errors': errors, 'current_date': date,
                                                         'expiry_date': expiry_date, 'random_card_number': card_number,
-                                                        'users': users})
+                                                        'users': users, 'random_pin': random_pin})
 
 
 def create_card_post(request):
@@ -208,9 +210,9 @@ def create_card_post(request):
         # Branch if no error recorded
         if not errors:
             account = Account.objects.filter(username__exact=name)[0]
-            status = "Active" if "status" in request.POST else "Inactive"
+            active = 'active' in request.POST.keys()
             card = Card(account=account, card_number=int(number), pin=int(pin), date_issued=request.POST['date'],
-                        expiry_date=request.POST['expiry'], address=address, status=status)
+                        expiry_date=request.POST['expiry'], address=address, active=active)
             card.save()
             return HttpResponseRedirect(reverse('admin_menu', kwargs={'status_code': 4}))
 
@@ -303,8 +305,19 @@ def manage_cards(request):
     account_id = request.COOKIES.get('current_account')
     account = Account.objects.filter(id=account_id)[0]
     cards = Card.objects.filter(account=account)
-    return render(request, 'atmsite/manage_cards.html', {'cards': cards, 'checked': ""})
+    card_number_fields = [card.card_number for card in cards]
+    card_active_fields = ["checked" if card.active else "" for card in cards]
+    cards = zip(card_number_fields, card_active_fields)
+    return render(request, 'atmsite/manage_cards.html', {'cards': cards, 'checked': "checked"})
 
 
 def manage_cards_post(request):
-    pass
+    account_id = request.COOKIES.get('current_account')
+    account = Account.objects.get(id=account_id)
+    for card in Card.objects.filter(account=account):
+        if card.card_number in request.POST:
+            card.active = True
+        else:
+            card.active = False
+        card.save()
+    return HttpResponseRedirect(reverse('account_menu', kwargs={'status_code': 5}))
