@@ -18,8 +18,7 @@ pin_pattern = "[0-9]{1,4}"
 
 from .models import Account, Card, ATM
 
-status_codes = {0: '', 1: "Transaction Succeeded", 2: "You are not logged in", 3: "Account created",
-                4: "Card Created", 5: "Data saved"}
+status_codes = {0: '', 1: "Transaction Succeeded", 2: "You are not logged in", 3: "Account created", 4: "Card Created"}
 
 
 # Create your views here.
@@ -210,9 +209,9 @@ def create_card_post(request):
         # Branch if no error recorded
         if not errors:
             account = Account.objects.filter(username__exact=name)[0]
-            active = 'active' in request.POST.keys()
+            status = "Active" if "status" in request.POST else "Inactive"
             card = Card(account=account, card_number=int(number), pin=int(pin), date_issued=request.POST['date'],
-                        expiry_date=request.POST['expiry'], address=address, active=active)
+                        expiry_date=request.POST['expiry'], address=address, status=status)
             card.save()
             return HttpResponseRedirect(reverse('admin_menu', kwargs={'status_code': 4}))
 
@@ -303,21 +302,13 @@ def transfer_post(request):
 def manage_cards(request):
 
     account_id = request.COOKIES.get('current_account')
-    account = Account.objects.filter(id=account_id)[0]
+    account = Account.objects.get(id=account_id)
     cards = Card.objects.filter(account=account)
-    card_number_fields = [card.card_number for card in cards]
-    card_active_fields = ["checked" if card.active else "" for card in cards]
-    cards = zip(card_number_fields, card_active_fields)
-    return render(request, 'atmsite/manage_cards.html', {'cards': cards, 'checked': "checked"})
+    card_numbers = [card.number for card in cards]
+    card_actives = ["checked" if card.active else "" for card in cards]
+    cards = zip(card_numbers, card_actives)
+    return render(request, 'atmsite/manage_cards.html', {'cards': cards, 'checked': ""})
 
 
 def manage_cards_post(request):
-    account_id = request.COOKIES.get('current_account')
-    account = Account.objects.get(id=account_id)
-    for card in Card.objects.filter(account=account):
-        if card.card_number in request.POST:
-            card.active = True
-        else:
-            card.active = False
-        card.save()
-    return HttpResponseRedirect(reverse('account_menu', kwargs={'status_code': 5}))
+    pass
