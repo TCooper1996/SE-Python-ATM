@@ -12,7 +12,8 @@
 <body>
   <h1> Python ATM </h1>
 {% if error %}<p class = "errorClass">{{ error }}</p>{%  endif %}
-<form class="credentials" action="{%  url 'authenticate_account' %}" method="post">
+<div class = "credentials">
+<form  action="{%  url 'authenticate_account' %}" method="post">
     {% csrf_token %}
     <h1> Sign in </h1>
     <label for="username_entry">Enter Username</label>
@@ -23,16 +24,13 @@
     <br>
     <button type="submit" >Log in </button>
 </form>
-<div class="create-account">
-<h1>Create an account</h1>
-<form action="{% url 'create_account' %}" method="get">
-    {% csrf_token %}
-    <button type="submit" >Create Account </button>
-</form>
 <form action="{% url 'admin_login' %}" method="get">
     {% csrf_token %}
     <button type="submit" >Log in as admin </button>
 </form>
+
+
+
 </div>
 <p>{{ status_code }}</p>
 </body>
