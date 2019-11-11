@@ -1,24 +1,31 @@
+{% load static from staticfiles%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Transfer</title>
+    <link rel="icon" type="image/png" href="{% static 'credit-card-4x.png' %}" />
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+      <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-transfer money
+  <div class="credentials">
+ <h1> Transfer Money </h1>
 <form action="{% url 'transfer_post' %}" method="post">
     {% csrf_token %}
     <label for="receiving_account">To:</label>
     <input id="receiving_account" type="text" name="username" value="">
     <label for="amount">amount:</label>
     <input id="amount" type="text" name="amount" value="">
-    <input type="submit" value="Send">
+    <button type="submit" > Submit </button>
 
 </form>
 
 <form action="{% url 'account_menu' %}" method="get">
     <button type="submit">Return to menu</button>
+
 </form>
+</div>
 {% for error in errors %}
     <p class="errorClass">{{ error }}</p>
 {% endfor %}

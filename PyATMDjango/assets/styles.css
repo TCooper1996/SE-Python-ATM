@@ -17,6 +17,10 @@ h3{
   text-align: center;
 }
 
+.credentials th{
+  text-align: left;
+}
+
 .errorClass{
   color: #c56250;
   background-color: #0f121f;
