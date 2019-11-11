@@ -18,7 +18,8 @@ pin_pattern = "[0-9]{1,4}"
 
 from .models import Account, Card, ATM
 
-status_codes = {0: '', 1: "Transaction Succeeded", 2: "You are not logged in", 3: "Account created", 4: "Card Created"}
+status_codes = {0: '', 1: "Transaction Succeeded", 2: "You are not logged in", 3: "Account created", 4: "Card Created",
+                5: "Data saved"}
 
 
 # Create your views here.
@@ -209,23 +210,41 @@ def create_card_post(request):
         # Branch if no error recorded
         if not errors:
             account = Account.objects.filter(username__exact=name)[0]
-            status = "Active" if "status" in request.POST else "Inactive"
+            status = "status" in request.POST
             card = Card(account=account, card_number=int(number), pin=int(pin), date_issued=request.POST['date'],
-                        expiry_date=request.POST['expiry'], address=address, status=status)
+                        expiry_date=request.POST['expiry'], address=address, active=status)
             card.save()
             return HttpResponseRedirect(reverse('admin_menu', kwargs={'status_code': 4}))
 
         # Branch if an error was recorded, reload account creation page
         else:
+            card_number = randint(0, 999999999)
+            card_numbers = [card.card_number for card in Card.objects.all()]
+            random_pin = randint(0, 9999)
+            users = Account.objects.all()
+            # Randomize card_number until a unique one is found.
+            while card_number in card_numbers:
+                card_number = randint(0, 999999999)
             current_date = timezone.now().date().strftime("%Y-%m-%d")
             expiry_date = (timezone.now() + timedelta(weeks=104)).date().strftime("%Y-%m-%d")
-            return render(request, 'atmsite/create_card.html', {'errors': errors, 'current_date': current_date, 'expiry':expiry_date})
+            return render(request, 'atmsite/create_card.html', {'users' :users, 'errors': errors,
+                                                                'current_date': current_date, 'expiry':expiry_date,
+                                                                'random_pin':random_pin,
+                                                                'random_card_number':card_number})
 
     except ValueError:
+        card_number = randint(0, 999999999)
+        card_numbers = [card.card_number for card in Card.objects.all()]
+        random_pin = randint(0, 9999)
+        users = Account.objects.all()
+        # Randomize card_number until a unique one is found.
+        while card_number in card_numbers:
+            card_number = randint(0, 999999999)
         errors.append("ERROR: Balance must be numeric")
         current_date = timezone.now().date().strftime("%Y-%m-%d")
         expiry_date = (timezone.now() + timedelta(weeks=104)).date().strftime("%Y-%m-%d")
-        return render(request, 'atmsite/create_card.html', {'errors': errors, 'current_date': current_date, 'expiry_date':expiry_date})
+        return render(request, 'atmsite/create_card.html', {'users' :users, 'random_pin': random_pin,
+                                                            'random_card_number' : card_number, 'errors': errors, 'current_date': current_date, 'expiry_date':expiry_date})
 
 
 def atm_listing(request):
@@ -300,15 +319,24 @@ def transfer_post(request):
 
 
 def manage_cards(request):
-
     account_id = request.COOKIES.get('current_account')
     account = Account.objects.get(id=account_id)
     cards = Card.objects.filter(account=account)
-    card_numbers = [card.number for card in cards]
+    card_numbers = [card.card_number for card in cards]
     card_actives = ["checked" if card.active else "" for card in cards]
     cards = zip(card_numbers, card_actives)
-    return render(request, 'atmsite/manage_cards.html', {'cards': cards, 'checked': ""})
+    return render(request, 'atmsite/manage_cards.html', {'cards': cards, 'checked': "checked"})
 
 
 def manage_cards_post(request):
-    pass
+    account_id = request.COOKIES.get('current_account')
+    account = Account.objects.get(id=account_id)
+    cards = Card.objects.filter(account=account)
+    for card in cards:
+        if str(card.card_number) in request.POST.keys():
+            card.active = True
+        else:
+            card.active = False
+        card.save()
+    return HttpResponseRedirect(reverse('account_menu', kwargs={'status_code': 5}))
+
