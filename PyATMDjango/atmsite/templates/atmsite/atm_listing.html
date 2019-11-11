@@ -1,11 +1,16 @@
+{% load static from staticfiles%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>ATM Locations</title>
+    <link rel="icon" type="image/png" href="{% static 'credit-card-4x.png' %}" />
+    <link rel="stylesheet" href="{% static 'styles.css' %}">
+      <link href="https://fonts.googleapis.com/css?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
-Select an ATM by location
+  <div class="credentials">
+<h1> Select an ATM by location </h1>
 <form action="{% url 'atm_state' %}" method="get">
     {% csrf_token %}
     {% for atm in atms %}
@@ -15,5 +20,6 @@ Select an ATM by location
 <form  action="{% url 'admin_menu' %}" method="get">
     <input type="submit" value="Return">
 </form>
+</div>
 </body>
 </html>
