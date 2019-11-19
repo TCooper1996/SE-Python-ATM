@@ -14,7 +14,11 @@
 <form action="{% url 'transfer_post' %}" method="post">
     {% csrf_token %}
     <label for="receiving_account">To:</label>
-    <input id="receiving_account" type="text" name="username" value="">
+    <select id="receiving_account" name="username">
+        {% for user in users %}
+            <option value={{ user.username }}>{{ user.username }}</option>
+        {% endfor %}
+    </select>
     <label for="amount">amount:</label>
     <input id="amount" type="text" name="amount" value="">
     <button type="submit" > Submit </button>

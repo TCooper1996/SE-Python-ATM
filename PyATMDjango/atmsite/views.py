@@ -267,8 +267,9 @@ def authenticate_account(request):
     try:
         name = request.POST['username']
         password = request.POST['password']
+        pin = int(request.POST['pin'])
         a = Account.objects.filter(username__exact=name)[0]
-        if a.password == password:
+        if a.password == password and pin in [card.pin for card in Card.objects.filter(account=a)]:
             response = HttpResponseRedirect(reverse('account_menu'))
             response.set_cookie('current_account', a.id)
             return response
@@ -277,6 +278,9 @@ def authenticate_account(request):
 
     except IndexError:
         return render(request, 'atmsite/index.html', {'error': 'Unknown or Incorrect username/password'})
+
+    except ValueError:
+        return render(request, 'atmsite/index.html', {'error': 'Pin must be numeric'})
 
 
 def authenticate_admin(request):
@@ -290,10 +294,12 @@ def authenticate_admin(request):
 
 
 def transfer(request):
-    return render(request, 'atmsite/transfer.html')
+    users = Account.objects.all()
+    return render(request, 'atmsite/transfer.html', {'users': users})
 
 
 def transfer_post(request):
+    errors = []
     try:
         # Get currently logged in user, or redirect to log in if there is none.
         if request.COOKIES.get('current_account'):
@@ -303,19 +309,27 @@ def transfer_post(request):
         receiving_username = request.POST['username']
         amount = float(request.POST['amount'])
         receiving_account = Account.objects.filter(username__exact=receiving_username)[0]
-        if sending_account.balance > amount:
+        if amount < 0:
+            errors.append("Sending amount must be positive")
+
+        if sending_account.balance < amount:
+            errors.append("Insufficient funds to make transfer.")
+
+        if not errors:
             sending_account.balance -= amount
             receiving_account.balance += amount
             sending_account.save()
             receiving_account.save()
             return HttpResponseRedirect(reverse('account_menu', kwargs={'status_code': 1}))
-        else:
-            return render(request, 'atmsite/transfer.html', {'errors': ["Insufficient funds to make transfer"]})
+
     except IndexError:
-        return render(request, 'atmsite/transfer.html', {'errors': ["User does not exist."]})
+        errors.append("User does not exist")
 
     except ValueError:
-        return render(request, 'atmsite/transfer.html', {'errors': ["Amount field must be a number"]})
+        errors.append("Amount must be an integer")
+
+    users = Account.objects.all()
+    return render(request, 'atmsite/transfer.html', {'errors': errors, 'users': users})
 
 
 def manage_cards(request):
