@@ -5,9 +5,6 @@
 1. Project Overview	
 ATM Software is an academic project developed in Python scripting language which resembles the existing ATM (Automatic Teller Machine) software. 
 
-Please refer to the following link for investigate how to use Django framework to build your ATM.
-https://developer.mozilla.org/en-US/docs/Learn/Server-side/Django
-
 2. ATM Software
 The major modules of the ATM project are: admin module and user module. Admin refers to the bank that has installed the proposed ATM software project and the users are the customers of bank with authenticated cards.
 The admin module has following sub menus:
